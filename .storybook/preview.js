@@ -16,6 +16,7 @@ import {setOptions} from '@storybook/addon-options';
 
 import theme from '../src/sentry/static/sentry/app/utils/theme';
 import './storybook.less';
+import '../docs-ui/index.js';
 
 const withTheme = storyFn => <ThemeProvider theme={theme}>{storyFn()}</ThemeProvider>;
 
@@ -88,12 +89,3 @@ addParameters({
     storySort: undefined,
   },
 });
-
-// Use webpack's require.context to load modules dynamically
-// From https://storybook.js.org/basics/writing-stories/
-const req = require.context('../docs-ui/components', true, /\.stories\.(js|mdx)$/);
-
-configure(function() {
-  require('../docs-ui/index.js');
-  req.keys().forEach(filename => req(filename));
-}, module);

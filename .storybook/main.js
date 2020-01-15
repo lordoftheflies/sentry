@@ -15,6 +15,15 @@ const staticPath = path.resolve(
 );
 
 module.exports = {
+  stories: ['../docs-ui/components/*.stories.*'],
+  addons: [
+    '@storybook/addon-docs',
+    '@storybook/addon-storysource',
+    '@storybook/addon-knobs',
+    '@storybook/addon-actions',
+    '@storybook/addon-a11y',
+    '@storybook/addon-options',
+  ],
   webpack: config => {
     console.log(config);
     return {
