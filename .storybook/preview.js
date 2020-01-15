@@ -15,7 +15,6 @@ import {withInfo} from '@storybook/addon-info';
 import {setOptions} from '@storybook/addon-options';
 
 import theme from '../src/sentry/static/sentry/app/utils/theme';
-import './storybook.less';
 import '../docs-ui/index.js';
 
 const withTheme = storyFn => <ThemeProvider theme={theme}>{storyFn()}</ThemeProvider>;

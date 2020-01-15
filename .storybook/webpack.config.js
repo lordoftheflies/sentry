@@ -15,23 +15,23 @@ const staticPath = path.resolve(
 );
 
 module.exports = ({config}) => {
-  return {
+  const [firstRule, ...rules] = config.module.rules;
+  const filteredRules = rules.filter(rule => {
+    return (
+      (!rule.loader || !rule.loader.includes('file-loader')) &&
+      (!Array.isArray(rule.use) ||
+        !rule.use.find(({loader}) => loader && loader.includes('postcss-loader')))
+    );
+  });
+  const newConfig = {
     ...config,
     module: {
       ...config.module,
       rules: [
-        ...config.module.rules,
         {
-          test: /\.tsx?$/,
-          loader: 'ts-loader',
-        },
-        {
-          test: /\.po$/,
-          loader: 'po-catalog-loader',
-          query: {
-            referenceExtensions: ['.js', '.jsx'],
-            domain: 'sentry',
-          },
+          ...firstRule,
+          test: /\.(mjs|[tj]sx?)$/,
+          include: [path.join(__dirname), staticPath, path.join(__dirname, '../docs-ui')],
         },
         {
           test: /app\/icons\/.*\.svg$/,
@@ -43,6 +43,10 @@ module.exports = ({config}) => {
               loader: 'svgo-loader',
             },
           ],
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.less$/,
@@ -63,6 +67,15 @@ module.exports = ({config}) => {
           exclude: /app\/icons\/.*\.svg$/,
           loader: 'file-loader?name=' + '[name].[ext]',
         },
+        {
+          test: /\.po$/,
+          loader: 'po-catalog-loader',
+          query: {
+            referenceExtensions: ['.js', '.jsx'],
+            domain: 'sentry',
+          },
+        },
+        ...filteredRules,
       ],
     },
 
@@ -95,4 +108,6 @@ module.exports = ({config}) => {
       },
     },
   };
+
+  return newConfig;
 };
