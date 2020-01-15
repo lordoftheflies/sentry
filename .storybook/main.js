@@ -17,20 +17,35 @@ const staticPath = path.resolve(
 module.exports = {
   stories: ['../docs-ui/components/*.stories.*'],
   addons: [
-    '@storybook/addon-docs',
-    '@storybook/addon-storysource',
+    {
+      name: '@storybook/addon-docs',
+      options: {configureJSX: true},
+    },
+    // {
+    // name: '@storybook/source-loader',
+    // options: {
+    // rule: {
+    // // test: [/\.stories\.jsx?$/], This is default
+    // include: [path.resolve(__dirname, '../docs-ui')], // You can specify directories
+    // },
+    // loaderOptions: {
+    // prettierConfig: {printWidth: 80, singleQuote: false},
+    // },
+    // },
+    // },
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
     '@storybook/addon-options',
   ],
   webpack: config => {
-    console.log(config);
-    return {
+    console.log(JSON.stringify(config.module.rules));
+    const newConfig = {
       ...config,
       module: {
         ...config.module,
         rules: [
+          ...config.module.rules,
           // {
           // test: /\.stories\.tsx?$/,
           // loaders: [
@@ -41,10 +56,28 @@ module.exports = {
           // ],
           // enforce: 'pre',
           // },
-          {
-            test: /\.tsx?$/,
-            loader: 'ts-loader',
-          },
+          // {
+          // test: /\.tsx?$/,
+          // loader: 'ts-loader',
+          // },
+          // {
+          // test: /\.[tj]sx?$/,
+          // include: [path.join(__dirname, '../src/sentry/static')],
+          // exclude: /(vendor|node_modules|dist)/,
+          // use: {
+          // loader: 'babel-loader',
+          // },
+          // },
+          // {
+          // test: /\.(stories|story)\.[tj]sx?$/,
+          // loaders: [
+          // {
+          // loader: require.resolve('@storybook/source-loader'),
+          // options: {parser: 'typescript'},
+          // },
+          // ],
+          // enforce: 'pre',
+          // },
           {
             test: /\.po$/,
             loader: 'po-catalog-loader',
@@ -115,5 +148,8 @@ module.exports = {
         }),
       },
     };
+
+    console.log(newConfig);
+    return newConfig;
   },
 };
